@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Influenceur - Re-FAP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #ff6600 0%, #ff8533 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(255, 102, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Navigation */
+        .nav {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 2rem;
+            padding: 0 2rem;
+        }
+
+        .nav-item {
+            padding: 1rem 0;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #ff6600;
+            border-bottom-color: #ff6600;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: calc(100vh - 140px);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 102, 0, 0.2);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ff6600, #ff8533);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff6600;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .stat-change {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .positive { color: #4ade80; }
+        .negative { color: #f87171; }
+
+        /* Content Sections */
+        .section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #ff6600;
+        }
+
+        /* Link Section */
+        .link-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .link-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #ff6600, #ff8533);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 102, 0, 0.4);
+        }
+
+        /* Assets Grid */
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .asset-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .asset-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .asset-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* History Table */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .history-table th {
+            background: rgba(255, 102, 0, 0.1);
+            color: #ff6600;
+            font-weight: bold;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-paid { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
+        .status-pending { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+
+        /* Profile Form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: white;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ff6600;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #ff6600, #ff8533);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 102, 0, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-content {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">🚗 Re-FAP Dashboard</div>
+            <div class="user-info">
+                <div class="avatar" id="userAvatar">M</div>
+                <div>
+                    <div id="userName">Marie Dubois</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;">Influenceuse Auto</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <div class="nav-item active" onclick="showSection('dashboard')">📊 Dashboard</div>
+            <div class="nav-item" onclick="showSection('link')">🔗 Mon Lien</div>
+            <div class="nav-item" onclick="showSection('assets')">🎨 Assets Créatifs</div>
+            <div class="nav-item" onclick="showSection('history')">📈 Historique</div>
+            <div class="nav-item" onclick="showSection('profile')">⚙️ Profil</div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-value" id="totalClicks">1,247</div>
+                    <div class="stat-label">Clics totaux</div>
+                    <div class="stat-change positive">+23% ce mois</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-value" id="conversions">42</div>
+                    <div class="stat-label">Conversions</div>
+                    <div class="stat-change positive">+15% ce mois</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value" id="totalEarnings">1,050€</div>
+                    <div class="stat-label">Gains totaux</div>
+                    <div class="stat-change positive">+375€ ce mois</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="conversionRate">3.4%</div>
+                    <div class="stat-label">Taux de conversion</div>
+                    <div class="stat-change negative">-0.2% ce mois</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📈 Performance des 30 derniers jours</div>
+                <canvas id="performanceChart" width="800" height="300" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem;"></canvas>
+            </div>
+        </div>
+
+        <!-- Link Section -->
+        <div id="link" class="section">
+            <div class="section-title">🔗 Votre Lien Personnalisé</div>
+            <div class="link-container">
+                <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.8);">
+                    Partagez ce lien unique avec votre audience. Chaque conversion sera automatiquement attribuée à votre compte.
+                </p>
+                <input 
+                    type="text" 
+                    class="link-input" 
+                    id="influencerLink" 
+                    value="https://julien-chatbot.vercel.app/?ref=recABC123"
+                    readonly
+                />
+                <button class="copy-btn" onclick="copyLink()">📋 Copier le Lien</button>
+                <button class="copy-btn" onclick="shareOnSocial()" style="margin-left: 1rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9);">📱 Partager</button>
+            </div>
+
+            <div class="assets-grid" style="margin-top: 2rem;">
+                <div class="asset-card">
+                    <div class="asset-icon">📱</div>
+                    <h3>Story Instagram</h3>
+                    <p style="font-size: 0.9rem; margin: 1rem 0; opacity: 0.8;">Template optimisé pour les stories</p>
+                    <button class="download-btn">Télécharger</button>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-icon">📸</div>
+                    <h3>Post Instagram</h3>
+                    <p style="font-size: 0.9rem; margin: 1rem 0; opacity: 0.8;">Visuel pour feed Instagram</p>
+                    <button class="download-btn">Télécharger</button>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-icon">🎬</div>
+                    <h3>Script Vidéo</h3>
+                    <p style="font-size: 0.9rem; margin: 1rem 0; opacity: 0.8;">Script prêt à l'emploi pour TikTok/Reels</p>
+                    <button class="download-btn">Télécharger</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assets Section -->
+        <div id="assets" class="section">
+            <div class="section-title">🎨 Kit Créatif Complet</div>
+            <div class="assets-grid">
+                <div class="asset-card">
+                    <div class="asset-icon">🖼️</div>
+                    <h3>Logos Re-FAP</h3>
+                    <p style="font-size: 0.9rem; margin: 1rem 0; opacity: 0.8;">Pack de logos HD</p>
+                    <button class="download-btn">Télécharger ZIP</button>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-icon">🎨</div>
+                    <h3>Charte Graphique</h3>
+                    <p style="font-size: 0.9rem; margin: 1rem 0; opacity: 0.8;">Couleurs et typographies</p>
+                    <button class="download-btn">Télécharger PDF</button>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-icon">📝</div>
+                    <h3>Templates Posts</h3>
+                    <p style="font-size: 0.9rem; margin: 1rem 0; opacity: 0.8;">Modèles Canva éditables</p>
+                    <button class="download-btn">Ouvrir Canva</button>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-icon">🎥</div>
+                    <h3>Vidéos Promo</h3>
+                    <p style="font-size: 0.9rem; margin: 1rem 0; opacity: 0.8;">Clips de démonstration</p>
+                    <button class="download-btn">Télécharger MP4</button>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-icon">📊</div>
+                    <h3>Guidelines</h3>
+                    <p style="font-size: 0.9rem; margin: 1rem 0; opacity: 0.8;">Guide de communication</p>
+                    <button class="download-btn">Télécharger PDF</button>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-icon">💬</div>
+                    <h3>Copies Ready</h3>
+                    <p style="font-size: 0.9rem; margin: 1rem 0; opacity: 0.8;">Textes prêts à copier-coller</p>
+                    <button class="download-btn">Voir Textes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Section -->
+        <div id="history" class="section">
+            <div class="section-title">📈 Historique des Gains</div>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Conversions</th>
+                        <th>Montant</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <tr>
+                        <td>27 Juillet 2025</td>
+                        <td>Diagnostic Auto</td>
+                        <td>8</td>
+                        <td>200€</td>
+                        <td><span class="status-badge status-pending">En attente</span></td>
+                    </tr>
+                    <tr>
+                        <td>15 Juillet 2025</td>
+                        <td>Diagnostic Auto</td>
+                        <td>12</td>
+                        <td>300€</td>
+                        <td><span class="status-badge status-paid">Payé</span></td>
+                    </tr>
+                    <tr>
+                        <td>1 Juillet 2025</td>
+                        <td>Diagnostic Auto</td>
+                        <td>14</td>
+                        <td>350€</td>
+                        <td><span class="status-badge status-paid">Payé</span></td>
+                    </tr>
+                    <tr>
+                        <td>15 Juin 2025</td>
+                        <td>Diagnostic Auto</td>
+                        <td>8</td>
+                        <td>200€</td>
+                        <td><span class="status-badge status-paid">Payé</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Profile Section -->
+        <div id="profile" class="section">
+            <div class="section-title">⚙️ Paramètres du Profil</div>
+            <div class="form-grid">
+                <div>
+                    <div class="form-group">
+                        <label class="form-label">Nom</label>
+                        <input type="text" class="form-input" id="profileName" value="Marie Dubois">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="profileEmail" value="marie@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Téléphone</label>
+                        <input type="tel" class="form-input" id="profilePhone" value="+33 6 12 34 56 78">
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label class="form-label">Plateforme Principale</label>
+                        <select class="form-input" id="profilePlatform">
+                            <option value="instagram">Instagram</option>
+                            <option value="tiktok">TikTok</option>
+                            <option value="youtube">YouTube</option>
+                            <option value="blog">Blog</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nombre d'Abonnés</label>
+                        <input type="number" class="form-input" id="profileFollowers" value="15000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">IBAN (pour paiements)</label>
+                        <input type="text" class="form-input" id="profileIban" placeholder="FR76 1234 5678 9012 3456 7890 123">
+                    </div>
+                </div>
+            </div>
+            <button class="save-btn" onclick="saveProfile()">💾 Sauvegarder les Modifications</button>
+        </div>
+    </div>
+
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked nav item
+            event.target.classList.add('active');
+        }
+
+        // Copy link functionality
+        function copyLink() {
+            const linkInput = document.getElementById('influencerLink');
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(linkInput.value).then(() => {
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Copié !';
+                btn.style.background = 'linear-gradient(135deg, #4ade80, #22c55e)';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = 'linear-gradient(135deg, #ff6600, #ff8533)';
+                }, 2000);
+            });
+        }
+
+        // Social sharing
+        function shareOnSocial() {
+            const link = document.getElementById('influencerLink').value;
+            const text = "Découvrez Re-FAP, l'assistant auto qui diagnostique vos problèmes de voiture gratuitement ! 🚗✨";
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Re-FAP - Assistant Auto',
+                    text: text,
+                    url: link
+                });
+            } else {
+                // Fallback for desktop
+                const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(link)}`;
+                window.open(shareUrl, '_blank');
+            }
+        }
+
+        // Save profile
+        function saveProfile() {
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '💾 Sauvegarde...';
+            btn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                btn.innerHTML = '✅ Sauvegardé !';
+                btn.style.background = 'linear-gradient(135deg, #4ade80, #22c55e)';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = 'linear-gradient(135deg, #ff6600, #ff8533)';
+                    btn.disabled = false;
+                }, 2000);
+            }, 1500);
+        }
+
+        // Load user data from Airtable (simulation)
+        function loadUserData() {
+            // This would normally fetch from your Airtable API
+            const userData = {
+                name: "Marie Dubois",
+                email: "marie@example.com",
+                totalClicks: 1247,
+                conversions: 42,
+                totalEarnings: 1050,
+                conversionRate: 3.4,
+                influencerRef: "recABC123"
+            };
+            
+            // Update dashboard
+            document.getElementById('userName').textContent = userData.name;
+            document.getElementById('userAvatar').textContent = userData.name.charAt(0);
+            document.getElementById('totalClicks').textContent = userData.totalClicks.toLocaleString();
+            document.getElementById('conversions').textContent = userData.conversions;
+            document.getElementById('totalEarnings').textContent = userData.totalEarnings + '€';
+            document.getElementById('conversionRate').textContent = userData.conversionRate + '%';
+            document.getElementById('influencerLink').value = `https://julien-chatbot.vercel.app/?ref=${userData.influencerRef}`;
+        }
+
+        // Draw performance chart (simple)
+        function drawChart() {
+            const canvas = document.getElementById('performanceChart');
+            const ctx = canvas.getContext('2d');
+            
+            // Simple line chart
+            ctx.strokeStyle = '#ff6600';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            const data = [20, 25, 30, 28, 35, 42, 38, 45, 40, 42];
+            const width = canvas.width - 40;
+            const height = canvas.height - 40;
+            
+            for (let i = 0; i < data.length; i++) {
+                const x = 20 + (i * width / (data.length - 1));
+                const y = height - (data[i] * height / 50) + 20;
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            
+            ctx.stroke();
+            
+            // Add gradient fill
+            ctx.globalAlpha = 0.2;
+            ctx.fillStyle = '#ff6600';
+            ctx.lineTo(width + 20, height + 20);
+            ctx.lineTo(20, height + 20);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            drawChart();
+        });
+
+        // Real-time updates (simulate)
+        setInterval(() => {
+            const clicks = parseInt(document.getElementById('totalClicks').textContent.replace(',', ''));
+            document.getElementById('totalClicks').textContent = (clicks + Math.floor(Math.random() * 3)).toLocaleString();
+        }, 30000);
+    </script>
+</body>
+</html>
